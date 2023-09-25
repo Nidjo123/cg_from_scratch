@@ -1,4 +1,4 @@
-use cg_from_scratch::canvas::{Canvas, CanvasPosition};
+use cg_from_scratch::canvas::{Drawable, ImagePosition};
 use cg_from_scratch::color::Color;
 use image::{Rgb, RgbImage};
 use show_image::{event, ImageInfo, ImageView, WindowOptions};
@@ -21,7 +21,7 @@ impl Image {
     }
 }
 
-impl Canvas for Image {
+impl Drawable for Image {
     fn width(&self) -> u32 {
         self.image.width()
     }
@@ -30,20 +30,28 @@ impl Canvas for Image {
         self.image.height()
     }
 
-    fn put_pixel(&mut self, position: &CanvasPosition, color: &Color) {
-        let width = self.width() as i32;
-        let height = self.height() as i32;
-        let screen_x = ((position.x + width / 2) as u32).clamp(0, self.width() - 1);
-        let screen_y = ((position.y + height / 2) as u32).clamp(0, self.height() - 1);
-        self.image
-            .put_pixel(screen_x, screen_y, Rgb(color.as_rgb_array()));
+    fn put_pixel(&mut self, position: ImagePosition, color: Color) {
+        match position {
+            ImagePosition::Screen { x, y } => self.image.put_pixel(x, y, Rgb(color.as_rgb_array())),
+            ImagePosition::Canvas { x, y } => {
+                let width = self.width() as i32;
+                let height = self.height() as i32;
+                let screen_x = ((x + width / 2) as u32).clamp(0, self.width() - 1);
+                let screen_y = ((y + height / 2) as u32).clamp(0, self.height() - 1);
+                self.image
+                    .put_pixel(screen_x, screen_y, Rgb(color.as_rgb_array()));
+            }
+        }
     }
 }
 
-fn put_line(canvas: &mut dyn Canvas, y: i32) {
+fn put_line(canvas: &mut dyn Drawable, y: i32) {
     let width = canvas.width() as i32;
     for x in -width / 2..width {
-        canvas.put_pixel(&CanvasPosition { x, y }, &Color::from_rgb(255, 255, 255));
+        canvas.put_pixel(
+            ImagePosition::Canvas { x, y },
+            Color::from_rgb(255, 255, 255),
+        );
     }
 }
 
