@@ -4,6 +4,11 @@ Canvas::Canvas(int width, int height): width_{width}, height_{height}, pixels_(w
 }
 
 void Canvas::PutPixel(int x, int y, const Color& color) {
+    x += (width() >> 1);
+    y += (height() >> 1);
+    if (x < 0 || x >= width() || y < 0 || y >= height()) {
+        return;
+    }
     pixels_[y * width_ + x] = color;
 }
 
