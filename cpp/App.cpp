@@ -29,9 +29,11 @@ App::~App() {
 
 void App::Render() {
     auto window_surface = SDL_GetWindowSurface(window_);
-#ifdef SDL_MUSTLOCK
-    SDL_LockSurface(window_surface);
-#endif
+
+    if (SDL_MUSTLOCK(window_surface)) {
+        SDL_LockSurface(window_surface);
+    }
+
     for (auto y = 0; y < canvas_.height(); y++) {
         for (auto x = 0; x < canvas_.width(); x++) {
             auto pixel = (Uint32 *) (static_cast<uint8_t *>(window_surface->pixels) + y * window_surface->
@@ -41,9 +43,9 @@ void App::Render() {
         }
     }
 
-#ifdef SDL_MUSTLOCK
-    SDL_UnlockSurface(window_surface);
-#endif
+    if (SDL_MUSTLOCK(window_surface)) {
+        SDL_UnlockSurface(window_surface);
+    }
 
     SDL_UpdateWindowSurface(window_);
 }
