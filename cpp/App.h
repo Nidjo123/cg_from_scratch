@@ -13,13 +13,18 @@ public:
 
     virtual ~App();
 
-    void Render();
+    virtual void Render();
 
     void Run();
 
 private:
-    SDL_Window* window_{};
+    void UpdateScreen();
+
+protected:
     Canvas canvas_;
+
+private:
+    SDL_Window* window_{};
 };
 
 

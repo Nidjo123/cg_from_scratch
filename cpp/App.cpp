@@ -28,6 +28,26 @@ App::~App() {
 }
 
 void App::Render() {
+}
+
+void App::Run() {
+    bool running = true;
+
+    SDL_Event event;
+    while (running) {
+        while (SDL_PollEvent(&event)) {
+            switch (event.type) {
+                case SDL_QUIT:
+                    running = false;
+                    break;
+            }
+        }
+        Render();
+        UpdateScreen();
+    }
+}
+
+void App::UpdateScreen() {
     auto window_surface = SDL_GetWindowSurface(window_);
 
     if (SDL_MUSTLOCK(window_surface)) {
@@ -48,22 +68,4 @@ void App::Render() {
     }
 
     SDL_UpdateWindowSurface(window_);
-}
-
-void App::Run() {
-    bool running = true;
-
-    SDL_Event event;
-    while (running) {
-        while (SDL_PollEvent(&event)) {
-            switch (event.type) {
-                case SDL_QUIT:
-                    running = false;
-                    break;
-            }
-        }
-        for (auto x = 0; x < 100; x++)
-            canvas_.PutPixel(x, 50, Color{255, 255, 255});
-        Render();
-    }
 }
