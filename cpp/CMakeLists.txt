@@ -3,6 +3,7 @@ project(cpp)
 
 set(CMAKE_CXX_STANDARD 20)
 
+add_subdirectory(math)
 find_package(SDL2 REQUIRED)
 
 add_library(cgfs_support
@@ -15,6 +16,7 @@ add_library(cgfs_support
 
 target_include_directories(cgfs_support PRIVATE ${SDL2_INCLUDE_DIRS} ${CMAKE_SOURCE_DIR})
 target_link_libraries(cgfs_support PRIVATE ${SDL2_LIBRARIES})
+target_link_libraries(cgfs_support PUBLIC cgmath)
 
 
 add_executable(cgfs Main.cpp)
